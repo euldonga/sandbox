@@ -8,8 +8,10 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import kr.co.expernet.sandbox.server.handler.IOHandler;
 import kr.co.expernet.sandbox.server.mapper.CcMapper;
 import kr.co.expernet.sandbox.server.mapper.GcsMapper;
+import kr.co.expernet.sandbox.server.protocol.Mavlink;
 
 public class CcReceiver implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(CcReceiver.class);
@@ -30,16 +32,20 @@ public class CcReceiver implements Runnable {
 	@Override
 	public void run() {
 		try {
-			int i = -1;
-			while ((i = bis.read()) != -1) {
+			int len = 0;
+			byte[] buffer = new byte[Mavlink.SIZE];
+			while ((len = bis.read(buffer, 0, buffer.length)) != -1) {
 				BufferedOutputStream gcs = GcsMapper.get("gcs");
 				if (gcs != null) {
-					gcs.write(i);
+					gcs.write(buffer, 0, len);
 					gcs.flush();
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			IOHandler.close(bis, bos);
+			log.info("--- CC RECEIVER TERMINATE.");
 		}
 	}
 }
