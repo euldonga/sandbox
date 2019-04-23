@@ -31,6 +31,10 @@ public class GcsReceiver implements Runnable {
 
 	@Override
 	public void run() {
+		relayPacket();
+	}
+
+	private void relayPacket() {
 		try {
 			int len = 0;
 			byte[] buffer = new byte[Mavlink.SIZE];
