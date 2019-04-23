@@ -50,6 +50,7 @@ public class GcsReceiver implements Runnable {
 		} finally {
 			IOHandler.close(bis, bos);
 			log.info("--- GCS RECEIVER TERMINATE.");
+			GcsMapper.remove("gcs");
 		}
 	}
 }

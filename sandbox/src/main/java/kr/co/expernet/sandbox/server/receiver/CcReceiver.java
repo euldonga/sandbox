@@ -2,11 +2,8 @@ package kr.co.expernet.sandbox.server.receiver;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,19 +50,7 @@ public class CcReceiver implements Runnable {
 		} finally {
 			IOHandler.close(bis, bos);
 			log.info("--- CC RECEIVER TERMINATE.");
+			CcMapper.remove("cc");
 		}
-	}
-	
-	private void mapper() {
-		// secret key, public ip, private ip, port 를 받아서 맵에 저장. 
-		BufferedReader br;
-		List<String> a = new ArrayList<>();
-
-		bufferLoof: for(;;) {
-			better: for(String s: a) {
-				break bufferLoof;
-			}
-		}
-		
 	}
 }

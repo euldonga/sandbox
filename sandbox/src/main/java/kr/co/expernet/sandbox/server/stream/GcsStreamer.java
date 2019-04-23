@@ -45,7 +45,7 @@ public class GcsStreamer implements Runnable {
 		} finally {
 			IOHandler.close(bis, bos);
 			log.info("--- GCS STREAMER TERMINATE.");
-			CcMapper.remove("ccstream");
+			GcsMapper.remove("gcsstream");
 		}
 	}
 }
