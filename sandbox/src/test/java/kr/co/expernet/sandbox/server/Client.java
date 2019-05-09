@@ -1,11 +1,16 @@
 package kr.co.expernet.sandbox.server;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.Test;
 
@@ -32,6 +37,17 @@ public class Client {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	@Test
+	public void concurrentHashMapTest() {
+		ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
+		BufferedOutputStream bos = new BufferedOutputStream(System.out);
+		map.put("1", bos);
+		assertTrue(map.remove("1", new BufferedOutputStream(System.out)));
+		
+		map.put("1", bos);
+		assertFalse(map.remove("1", new BufferedOutputStream(System.out)));
 	}
 
 }

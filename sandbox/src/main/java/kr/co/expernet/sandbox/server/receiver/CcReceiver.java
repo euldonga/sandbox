@@ -8,6 +8,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import kr.co.expernet.sandbox.server.enums.Client;
 import kr.co.expernet.sandbox.server.handler.IOHandler;
 import kr.co.expernet.sandbox.server.mapper.CcMapper;
 import kr.co.expernet.sandbox.server.mapper.GcsMapper;
@@ -17,15 +18,19 @@ public class CcReceiver implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(CcReceiver.class);
 	private BufferedInputStream bis;
 	private BufferedOutputStream bos;
-
+	private final String process;
+	private final String key = Client.CC.getName();
+	
 	public CcReceiver(Socket socket) {
+		process = Thread.currentThread().getName();
 		try {
 			bis = new BufferedInputStream(socket.getInputStream());
 			bos = new BufferedOutputStream(socket.getOutputStream());
-			CcMapper.add("cc", bos);
-			log.info("--- CC CONNECTED.");
-		} catch (IOException e) {
+			IOHandler.regist(CcMapper.class, key, bis, bos);
+			log.info("--- {} --- {} CONNECTED.", process, key);
+		} catch (Exception e) {
 			e.printStackTrace();
+			IOHandler.close(bis, bos);
 		}
 	}
 	
@@ -39,7 +44,7 @@ public class CcReceiver implements Runnable {
 			int len = 0;
 			byte[] buffer = new byte[Mavlink.SIZE];
 			while ((len = bis.read(buffer, 0, buffer.length)) != -1) {
-				BufferedOutputStream gcs = GcsMapper.get("gcs");
+				BufferedOutputStream gcs = GcsMapper.getBos("gcs");
 				if (gcs != null) {
 					gcs.write(buffer, 0, len);
 					gcs.flush();
@@ -48,9 +53,12 @@ public class CcReceiver implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			IOHandler.close(bis, bos);
-			log.info("--- CC RECEIVER TERMINATE.");
-			CcMapper.remove("cc");
+			try {
+				IOHandler.close(CcMapper.class, key, bis, bos);
+				log.info("--- {} --- GCS RECEIVER TERMINATE.", process);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
