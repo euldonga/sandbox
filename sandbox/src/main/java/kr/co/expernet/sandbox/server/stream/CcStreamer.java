@@ -39,6 +39,7 @@ public class CcStreamer implements Runnable {
 			IOHandler.regist(CcMapper.class, key, bis, bos);
 		} catch (Exception e) {
 			e.printStackTrace();
+			IOHandler.close(bis, bos);
 		}
 	}
 	
