@@ -17,24 +17,29 @@ public class CcStreamer implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(CcStreamer.class);
 	private BufferedInputStream bis;
 	private BufferedOutputStream bos;
-	private final String process;
 	private final String key = Client.CC_VIDEO.getName();
 
 	public CcStreamer(Socket socket) {
-		process = Thread.currentThread().getName();
+		init(socket);
+	}
+
+	@SuppressWarnings("unused")
+	private CcStreamer() { }
+	
+	@Override
+	public void run() {
+		log.info("[{}] --- [{}] CONNECTED.", Thread.currentThread().getName(), key);
+		relayStream();
+	}
+	
+	private void init(Socket socket) {
 		try {
 			bis = new BufferedInputStream(socket.getInputStream());
 			bos = new BufferedOutputStream(socket.getOutputStream());
 			IOHandler.regist(CcMapper.class, key, bis, bos);
-			log.info("--- {} --- {} CONNECTED.", process, key);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public void run() {
-		relayStream();
 	}
 	
 	private void relayStream() {
@@ -53,7 +58,7 @@ public class CcStreamer implements Runnable {
 		} finally {
 			try {
 				IOHandler.close(GcsMapper.class, key, bis, bos);
-				log.info("--- {} --- CC VIDEO STREAMER TERMINATE.", process);
+				log.info("[{}] --- [{}] VIDEO STREAMER TERMINATE.", Thread.currentThread().getName(), key);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

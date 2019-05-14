@@ -18,25 +18,30 @@ public class CcReceiver implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(CcReceiver.class);
 	private BufferedInputStream bis;
 	private BufferedOutputStream bos;
-	private final String process;
 	private final String key = Client.CC.getName();
 	
 	public CcReceiver(Socket socket) {
-		process = Thread.currentThread().getName();
+		init(socket);
+	}
+	
+	@SuppressWarnings("unused")
+	private CcReceiver() { }
+	
+	@Override
+	public void run() {
+		log.info("[{}] --- [{}] CONNECTED.", Thread.currentThread().getName(), key);
+		relayPacket();
+	}
+	
+	private void init(Socket socket) {
 		try {
 			bis = new BufferedInputStream(socket.getInputStream());
 			bos = new BufferedOutputStream(socket.getOutputStream());
 			IOHandler.regist(CcMapper.class, key, bis, bos);
-			log.info("--- {} --- {} CONNECTED.", process, key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			IOHandler.close(bis, bos);
 		}
-	}
-	
-	@Override
-	public void run() {
-		relayPacket();
 	}
 	
 	private void relayPacket() {
@@ -44,7 +49,7 @@ public class CcReceiver implements Runnable {
 			int len = 0;
 			byte[] buffer = new byte[Mavlink.SIZE];
 			while ((len = bis.read(buffer, 0, buffer.length)) != -1) {
-				BufferedOutputStream gcs = GcsMapper.getBos("gcs");
+				BufferedOutputStream gcs = GcsMapper.getBos(Client.GCS.getName());
 				if (gcs != null) {
 					gcs.write(buffer, 0, len);
 					gcs.flush();
@@ -55,7 +60,7 @@ public class CcReceiver implements Runnable {
 		} finally {
 			try {
 				IOHandler.close(CcMapper.class, key, bis, bos);
-				log.info("--- {} --- GCS RECEIVER TERMINATE.", process);
+				log.info("[{}] --- [{}] TERMINATE.", Thread.currentThread().getName(), key);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

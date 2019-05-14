@@ -18,27 +18,32 @@ public class GcsReceiver implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(GcsReceiver.class);
 	private BufferedInputStream bis;
 	private BufferedOutputStream bos;
-	private final String process;
 	private final String key = Client.GCS.getName();
 	
 	public GcsReceiver(Socket socket) {
-		process = Thread.currentThread().getName();
+		init(socket);
+	}
+
+	@SuppressWarnings("unused")
+	private GcsReceiver() { }
+	
+	@Override
+	public void run() {
+		log.info("[{}] --- [{}] CONNECTED.", Thread.currentThread().getName(), key);
+		relayPacket();
+	}
+
+	private void init(Socket socket) {
 		try {
 			bis = new BufferedInputStream(socket.getInputStream());
 			bos = new BufferedOutputStream(socket.getOutputStream());
 			IOHandler.regist(GcsMapper.class, key, bis, bos);
-			log.info("--- {} --- {} CONNECTED.", process, key);
 		} catch (Exception e) {
 			e.printStackTrace();
 			IOHandler.close(bis, bos);
 		}
 	}
-
-	@Override
-	public void run() {
-		relayPacket();
-	}
-
+	
 	private void relayPacket() {
 		try {
 			int len = 0;
@@ -55,7 +60,7 @@ public class GcsReceiver implements Runnable {
 		} finally {
 			try {
 				IOHandler.close(GcsMapper.class, key, bis, bos);
-				log.info("--- {} --- GCS RECEIVER TERMINATE.", process);
+				log.info("[{}] --- [{}] TERMINATE.", Thread.currentThread().getName(), key);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

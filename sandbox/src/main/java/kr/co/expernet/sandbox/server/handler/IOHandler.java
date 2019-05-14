@@ -6,6 +6,7 @@ import java.io.Closeable;
 import java.io.IOException;
 
 public class IOHandler {
+	private IOHandler() {}
 	
 	public static void regist(Class<?> mapper, String key, BufferedInputStream bis, BufferedOutputStream bos) throws Exception {
 		close(mapper, key);
@@ -35,7 +36,7 @@ public class IOHandler {
 	}
 
 	private static void add(Class<?> mapper, String key, BufferedInputStream bis, BufferedOutputStream bos) throws Exception {
-		mapper.getDeclaredMethod("add", String.class).invoke(null, key, bis, bos);
+		mapper.getDeclaredMethod("add", String.class, BufferedInputStream.class, BufferedOutputStream.class).invoke(null, key, bis, bos);
 	}
 
 	private static BufferedInputStream getBis(Class<?> mapper, String key) throws Exception {
@@ -51,6 +52,6 @@ public class IOHandler {
 	}
 
 	private static void remove(Class<?> mapper, String key, BufferedInputStream bis, BufferedOutputStream bos) throws Exception {
-		mapper.getDeclaredMethod("remove", String.class).invoke(null, key, bis, bos);
+		mapper.getDeclaredMethod("remove", String.class, BufferedInputStream.class, BufferedOutputStream.class).invoke(null, key, bis, bos);
 	}
 }
