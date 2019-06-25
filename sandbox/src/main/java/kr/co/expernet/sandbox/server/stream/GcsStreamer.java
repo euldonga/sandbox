@@ -46,7 +46,7 @@ public class GcsStreamer implements Runnable {
 	private void relayStream() {
 		try {
 			int len = 0;
-			byte[] buffer = new byte[4096];
+			byte[] buffer = new byte[1024];
 			while ((len = bis.read(buffer, 0, buffer.length)) != -1) {
 				BufferedOutputStream cc = CcMapper.getBos(Client.CC_VIDEO.getName());
 				if (cc != null) {

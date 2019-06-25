@@ -14,18 +14,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		log.info("-----------------------< START MAVLINK RELAY SERVER >-----------------------");
-		new Thread(new ConnectionRunnable(CcReceiver.class, 21000)).start();
-		new Thread(new ConnectionRunnable(GcsReceiver.class, 22000)).start();
-		new Thread(new ConnectionRunnable(CcReceiver.class, 21001)).start();
-		new Thread(new ConnectionRunnable(GcsReceiver.class, 22001)).start();
-		new Thread(new ConnectionRunnable(CcReceiver.class, 21002)).start();
-		new Thread(new ConnectionRunnable(GcsReceiver.class, 22002)).start();
-		log.info("-----------------------< START VIDEO STREAMING SERVER >-----------------------");
-		new Thread(new ConnectionRunnable(CcStreamer.class, 41000)).start();
-		new Thread(new ConnectionRunnable(GcsStreamer.class, 42000)).start();
-		new Thread(new ConnectionRunnable(CcStreamer.class, 41001)).start();
-		new Thread(new ConnectionRunnable(GcsStreamer.class, 42001)).start();
-		new Thread(new ConnectionRunnable(CcStreamer.class, 41002)).start();
-		new Thread(new ConnectionRunnable(GcsStreamer.class, 42002)).start();
+		new Thread(new ConnectionRunnable(CcReceiver.class, 51000)).start();
+		new Thread(new ConnectionRunnable(GcsReceiver.class, 52000)).start();
 	}
 }
