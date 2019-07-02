@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory;
 import kr.co.expernet.sandbox.server.connection.ConnectionRunnable;
 import kr.co.expernet.sandbox.server.receiver.CcReceiver;
 import kr.co.expernet.sandbox.server.receiver.GcsReceiver;
-import kr.co.expernet.sandbox.server.stream.CcStreamer;
-import kr.co.expernet.sandbox.server.stream.GcsStreamer;
 
 public class Main {
 	private static final Logger log = LoggerFactory.getLogger(Main.class);

@@ -49,6 +49,7 @@ public class GcsReceiver implements Runnable {
 			int len = 0;
 			byte[] buffer = new byte[Mavlink.SIZE];
 			while ((len = bis.read(buffer, 0, buffer.length)) != -1) {
+				System.out.println(new String(buffer));
 				BufferedOutputStream cc = CcMapper.getBos(Client.CC.getName());
 				if (cc != null) {
 					cc.write(buffer, 0, len);

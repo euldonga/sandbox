@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import kr.co.expernet.sandbox.server.enums.Client;
 import kr.co.expernet.sandbox.server.handler.IOHandler;
 import kr.co.expernet.sandbox.server.mapper.CcMapper;
-import kr.co.expernet.sandbox.server.mapper.GcsMapper;
-import kr.co.expernet.sandbox.server.protocol.Mavlink;
 
 public class CcReceiver implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(CcReceiver.class);
@@ -52,22 +50,33 @@ public class CcReceiver implements Runnable {
 	}
 	
 	private void sendFile() {
-		FileInputStream fis = null;
 		try {
-			fis = new FileInputStream(new File("/expernet/audio/tts.wav"));
-			int readCount = 0;
-			byte[] buffer = new byte[1024];
-			while ((readCount = fis.read(buffer)) != -1) {
-				bos.write(buffer, 0, readCount);
-				bos.flush();
+			while (true) {
+				System.out.println("connected...");
+				Thread.sleep(3000);
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
-			IOHandler.close(fis, bis, bos);
+			IOHandler.close(bis, bos);
 		}
+		
+//		FileInputStream fis = null;
+//		try {
+//			fis = new FileInputStream(new File("/expernet/audio/tts.wav"));
+//			int readCount = 0;
+//			byte[] buffer = new byte[1024];
+//			while ((readCount = fis.read(buffer)) != -1) {
+//				bos.write(buffer, 0, readCount);
+//				bos.flush();
+//			}
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//			IOHandler.close(fis, bis, bos);
+//		}
 	}
 	
 	private void sendPcm() {

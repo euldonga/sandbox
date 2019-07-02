@@ -3,6 +3,7 @@ package kr.co.expernet.sandbox.server;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.Test;
@@ -36,6 +38,19 @@ public class Client {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	@Test
+	public void connect() {
+		Socket socket;
+		BufferedInputStream bis = null;
+		try {
+			socket = new Socket("61.38.108.231", 51000);
+			bis = new BufferedInputStream(socket.getInputStream());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
